@@ -1,5 +1,5 @@
 import th_modern, th_common
-import th06, th07, th08, th09, th10, th11, th12, th13, th14
+import th06, th06nc, th07, th08, th09, th10, th11, th12, th13, th14
 
 # thheader = th_modern.ThModern.from_bytes(data)
 # data = bytearray(thheader.main.comp_data)
@@ -17,31 +17,48 @@ import th06, th07, th08, th09, th10, th11, th12, th13, th14
 # print(replay.header.stagecount)
 # print(replay.stages[2].stage)
 
-f = open("th9_24.raw", "rb")
+f = open("th6_07.raw", "rb")
 data = f.read()
 f.close()
 
-r = th09.Th09.from_bytes(data)
+r = th06nc.Th06nc.from_bytes(data)
 
-for i in range(40):
-    if isinstance(r.stages[i], th09.Th09.Stage):
+print(r.header.shot)
+print(r.header.score)
+print(r.header.difficulty)
+
+for i in range(7):
+    if isinstance(r.stages[i], th06nc.Th06nc.Stage):
         print(i)
         print(r.stages[i].score)
-        print(r.stages[i].shot)
-        print("-------------")
+        print(r.stages[i].lives)
+        print(r.stages[i].bombs)
+
+# f = open("th9_24.raw", "rb")
+# data = f.read()
+# f.close()
+
+# r = th09.Th09.from_bytes(data)
+
+# for i in range(40):
+#     if isinstance(r.stages[i], th09.Th09.Stage):
+#         print(i)
+#         print(r.stages[i].score)
+#         print(r.stages[i].shot)
+#         print("-------------")
 
 
-f = open("th9_25.raw", "rb")
-data = f.read()
-f.close()
-r = th09.Th09.from_bytes(data)
+# f = open("th9_25.raw", "rb")
+# data = f.read()
+# f.close()
+# r = th09.Th09.from_bytes(data)
 
-for i in range(40):
-    if isinstance(r.stages[i], th09.Th09.Stage):
-        print(i)
-        print(r.stages[i].score)
-        print(r.stages[i].shot)
-        print("-------------")
+# for i in range(40):
+#     if isinstance(r.stages[i], th09.Th09.Stage):
+#         print(i)
+#         print(r.stages[i].score)
+#         print(r.stages[i].shot)
+#         print("-------------")
 
 # for stage in r.stages:
 #     if isinstance(stage, th09.Th09.Stage):

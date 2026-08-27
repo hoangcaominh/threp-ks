@@ -31,10 +31,8 @@ types:
       - id: difficulty
         type: u1
       - id: unknown_2
-        type: str
-        size: 8
+        size: 7
       - id: unknown_3
-        type: str
         size: 4
       - id: date
         type: str
@@ -46,17 +44,17 @@ types:
         size: 9
         encoding: ASCII
         terminator: 0x0
-      - id: unknown_3
+      - id: unknown_4
         type: u2
       - id: score
         type: u8
-      - id: unknown_4
+      - id: unknown_5
         type: u4
       - id: slowdown
         type: f4
-      - id: unknown_5
-        type: u4
       - id: unknown_6
+        type: u4
+      - id: unknown_7
         type: u4
       - id: stage_offsets
         type: u8
