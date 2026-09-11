@@ -63,18 +63,26 @@ types:
     instances:
       # See https://github.com/kaitai-io/kaitai_struct/issues/14
       # for an explanation of this pattern.
-      stage:
+      stage_header:
         io: _root._io
         pos: offset
-        type: stage
+        type: stage_header
+        size: 16
         if: offset != 0
-  stage:
+      input_frames:
+        io: _root._io
+        pos: offset + 16
+        type: input_frame
+        size: 8
+        repeat: until
+        repeat-until: _.frame_num == 9999999
+  stage_header:
     seq:
       - id: score
         type: u4
       - id: seed
         type: u2
-      - id: unknown_1
+      - id: unknown_1 # point_item_count
         type: u2
       - id: power
         type: u1
@@ -84,3 +92,11 @@ types:
         type: s1
       - id: rank
         type: u1
+      - id: unknown_2 # max_power_power_item_count
+        type: u4
+  input_frame:
+    seq:
+      - id: frame_num
+        type: s4
+      - id: input
+        type: b16
