@@ -3,23 +3,6 @@ meta:
   file-extension: rpy
   endian: le
 seq:
-  - id: header
-    type: header
-instances:
-  stages:
-    pos: header.stage_offsets[_index]
-    type:
-      switch-on: header.stage_offsets[_index]
-      cases:
-        0: dummy
-        _: stage
-    repeat: expr
-    repeat-expr: 7
-types:
-  dummy:
-    doc: blank type
-  header:
-    seq:
       - id: magic
         contents: T6RP
       - id: version
@@ -57,9 +40,23 @@ types:
       - id: unknown_5
         type: u4
       - id: stage_offsets
+    type: stage_pointer
+    repeat: expr
+    repeat-expr: 7
+types:
+  stage_pointer:
+    seq:
+      - id: offset
+        doc: Absolute offset to stage blocks
         type: u4
-        repeat: expr
-        repeat-expr: 7
+    instances:
+      # See https://github.com/kaitai-io/kaitai_struct/issues/14
+      # for an explanation of this pattern.
+      stage:
+        io: _root._io
+        pos: offset
+        type: stage
+        if: offset != 0
   stage:
     seq:
       - id: score
