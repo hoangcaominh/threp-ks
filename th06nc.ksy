@@ -3,74 +3,93 @@ meta:
   file-extension: rpy
   endian: le
 seq:
-  - id: header
-    type: header
-instances:
-  stages:
-    pos: header.stage_offsets[_index]
-    type:
-      switch-on: header.stage_offsets[_index]
-      cases:
-        0: dummy
-        _: stage
+  - id: magic
+    contents: T6RP
+  - id: version
+    size: 2
+  - id: mode
+    type: u1
+  - id: shot
+    type: u1
+  - id: difficulty
+    type: u1
+  - id: padding
+    size: 3
+  - id: unknown_1
+    type: u4
+  - id: unknown_2
+    type: u4
+  - id: date
+    type: str
+    size: 9
+    encoding: ASCII
+    terminator: 0x0
+  - id: name
+    type: str
+    size: 9
+    encoding: Shift_JIS
+    terminator: 0x0
+  - id: unknown_3
+    type: u2
+  - id: score
+    type: u8
+  - id: slowdown_2
+    type: f4
+  - id: slowdown
+    type: f4
+  - id: slowdown_3
+    type: f4
+  - id: padding2
+    size: 4
+  - id: stage_offsets
+    type: stage_pointer
     repeat: expr
     repeat-expr: 7
 types:
-  dummy:
-    doc: blank type
-  header:
+  stage_pointer:
     seq:
-      - id: magic
-        contents: T6RP
-      - id: version
-        size: 2
-      - id: unknown_1
-        type: u1
-      - id: shot
-        type: u1
-      - id: difficulty
-        type: u1
-      - id: unknown_2
-        size: 7
-      - id: unknown_3
-        size: 4
-      - id: date
-        type: str
-        size: 9
-        encoding: ASCII
-        terminator: 0x0
-      - id: name
-        type: str
-        size: 9
-        encoding: ASCII
-        terminator: 0x0
-      - id: unknown_4
-        type: u2
-      - id: score
+      - id: offset
+        doc: Absolute offset to stage blocks
         type: u8
-      - id: unknown_5
-        type: u4
-      - id: slowdown
-        type: f4
-      - id: unknown_6
-        type: u4
-      - id: unknown_7
-        type: u4
-      - id: stage_offsets
-        type: u8
-        repeat: expr
-        repeat-expr: 7
-  stage:
+    instances:
+      # See https://github.com/kaitai-io/kaitai_struct/issues/14
+      # for an explanation of this pattern.
+      stage_header:
+        io: _root._io
+        pos: offset
+        type: stage_header
+        size: 20
+        if: offset != 0
+      input_frames:
+        io: _root._io
+        pos: offset + 20
+        type: input_frame
+        size: 12
+        repeat: until
+        repeat-until: _.frame_num == 9999999
+  stage_header:
     seq:
       - id: score
         type: u8
       - id: seed
-        type: u4
+        type: u2
+      - id: unknown_1
+        type: u2
       - id: power
         type: u1
       - id: lives
         type: s1
       - id: bombs
         type: s1
-      - id: rank
+      - id: unknown_2
         type: u1
+      - id: unknown_3
+        type: u1
+      - id: unknown_4
+        size: 3
+  input_frame:
+    seq:
+      - id: frame_num
+        type: s4
+      - id: input
+        type: u8
